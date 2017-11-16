@@ -3,9 +3,9 @@
 #place this file in ur sources root
 
 #change personal data here
-SourceFiles=('main.h' 'main.c' 'refs.h' 'BS-HU1.TEAM')
+SourceFiles=('main.h' 'main.c' 'refs.h' 'Hu.TEAM')
 FilesToBeCompiled=('main.c')
-userId="hkgl29"
+userId="urID"
 
 clear
 printf "build started \n\n"
