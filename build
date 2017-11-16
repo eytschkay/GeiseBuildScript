@@ -3,39 +3,51 @@
 #place this file in ur sources root
 
 #change personal data here
-SourceFiles=('main.h' 'main.c' 'refs.h' 'Hu.TEAM')
+SourceFiles=('main.h' 'main.c' 'refs.h' 'HU.TEAM')
 FilesToBeCompiled=('main.c')
-userId="urID"
+userId="urId"
+
+#controls
+supressGccWarnings=true		#prevents gcc from showing warnings while compiling
+saveGccWarnings=false		#not possible if supressGccWarnings = true
 
 clear
 printf "build started \n\n"
 
 if [ -d "$userId" ]; then
-  printf "-> removing old files\n"
+  printf " -> removing old files\n"
   rm -rf "$userId" 
 fi
 
-printf "-> creating out dir\n"
+printf " -> creating out dir\n"
 mkdir "$userId"
 
-printf "-> copy source files\n";
+printf " -> copy source files\n";
 for i in "${SourceFiles[@]}"
 do 
   cp "$i" "./$userId/$i"
 done
 
-printf "-> compiling files\n"
+printf " -> compiling files\n"
 for i in "${FilesToBeCompiled[@]}"
 do 
   t=$(basename $i .c)
-  gcc -Wall -o "./$userId/$t" "./$userId/$i" 2> "./$userId/$t.gccmessages"
+  if [ "$supressGccWarnings" = true ]; then
+    gcc -Wall -o "./$userId/$t" "./$userId/$i" 2> gccWarnings.tmp
+    rm gccWarnings.tmp
+  elif [ "$saveGccWarnings" = true ]; then
+    gcc -Wall -o "./$userId/$t" "./$userId/$i" 2> "./$t.gccmessages"
+  else
+    gcc -Wall -o "./$userId/$t" "./$userId/$i"
+  fi
 done
 
-printf "-> packing\n"
-tar -cvf "$userId.tar" "$userId" > nul
-gzip "$userId.tar"
+printf " -> packing\n"
+tar -cvf "$userId.tar" "$userId" > tarStatus.tmp
+rm tarStatus.tmp
+gzip -f "$userId.tar"
 
-
+rm -rf "$userId"
 
 printf "\nbuild finished.\n"
 echo 
