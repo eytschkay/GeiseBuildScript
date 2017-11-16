@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#place this file in ur sources root
+
+#change personal data here
+SourceFiles=('main.h' 'main.c' 'refs.h' 'BS-HU1.TEAM')
+FilesToBeCompiled=('main.c')
+userId="hkgl29"
+
+clear
+printf "build started \n\n"
+
+if [ -d "$userId" ]; then
+  printf "-> removing old files\n"
+  rm -rf "$userId" 
+fi
+
+printf "-> creating out dir\n"
+mkdir "$userId"
+
+printf "-> copy source files\n";
+for i in "${SourceFiles[@]}"
+do 
+  cp "$i" "./$userId/$i"
+done
+
+printf "-> compiling files\n"
+for i in "${FilesToBeCompiled[@]}"
+do 
+  t=$(basename $i .c)
+  gcc -Wall -o "./$userId/$t" "./$userId/$i" 2> "./$userId/$t.gccmessages"
+done
+
+printf "-> packing\n"
+tar -cvf "$userId.tar" "$userId" > nul
+gzip "$userId.tar"
+
+
+
+printf "\nbuild finished.\n"
+echo 
